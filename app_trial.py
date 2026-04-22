@@ -5,6 +5,15 @@ import plotly.express as px
 import sqlite3
 import json
 import os
+import pytz
+
+# --- 0. TIMEZONE SETUP ---
+TZ = pytz.timezone('Asia/Jakarta')
+
+def get_now_jkt():
+    # Mengambil waktu sekarang di Jakarta dan dikonversi ke naive (tanpa tzinfo) 
+    # agar kompatibel dengan input dari Streamlit (date_input/time_input)
+    return datetime.now(TZ).replace(tzinfo=None)
 
 st.set_page_config(page_title="Factory Scheduler V14.1 - Fix Autopilot", layout="wide")
 
@@ -129,8 +138,8 @@ with st.container(border=True):
     with c5:
         st.write("Mode JIT")
         jit_on = st.toggle("Autopilot", value=True)
-    with c2: p_tgl = st.date_input("Rencana Tgl Start", datetime.now(), disabled=jit_on)
-    with c3: p_jam = st.time_input("Rencana Jam Start", datetime.now(), disabled=jit_on)
+    with c2: p_tgl = st.date_input("Rencana Tgl Start", get_now_jkt(), disabled=jit_on)
+    with c3: p_jam = st.time_input("Rencana Jam Start", get_now_jkt(), disabled=jit_on)
     with c4: b_cast = st.number_input("Durasi Cast", value=default_cast)
     
     plan_start_pre = datetime.combine(p_tgl, p_jam)
@@ -149,8 +158,7 @@ with st.container(border=True):
 # --- 4. LOGIKA PERHITUNGAN ---
 if st.session_state.batch_list and mesin_sehat:
     # Tentukan titik awal simulasi: Ambil yang terkecil antara waktu sekarang atau rencana mulai manual terkecil
-    # Ini memungkinkan user memasukkan data "backdate" (kemarin) tanpa dianggap "Oven Penuh"
-    waktu_skrg = datetime.now()
+    waktu_skrg = get_now_jkt()
     p_starts = [item['plan_start_pre'] for item in st.session_state.batch_list if not item.get('jit')]
     waktu_awal_simulasi = min(p_starts + [waktu_skrg]) if p_starts else waktu_skrg
     
@@ -232,7 +240,7 @@ if st.session_state.batch_list and mesin_sehat:
             if j['Mesin'] == 'Casting Unit': casting_bebas = j['Finish']
         
         # --- Logika Status Progress ---
-        now = datetime.now()
+        now = get_now_jkt()
         j_pre, j_cast, j_post = actual_job[0], actual_job[1], actual_job[2]
         
         if now < j_pre['Start']:
