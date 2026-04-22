@@ -83,18 +83,18 @@ if 'settings' not in st.session_state:
 with st.sidebar:
     st.header("⚙️ Parameter Pabrik")
     
-    # Fungsi Callback untuk Simpan Settings Otomatis
-    def update_settings():
-        st.session_state.settings['d_pre'] = d_pre_in
-        st.session_state.settings['d_post'] = d_post_in
-        st.session_state.settings['padding'] = pad_in
-        st.session_state.settings['d_cast'] = cast_in
+    # Fungsi Callback untuk Simpan Settings Otomatis menggunakan Session State Key
+    def update_settings_cb():
+        st.session_state.settings['d_pre'] = st.session_state.sb_pre
+        st.session_state.settings['d_post'] = st.session_state.sb_post
+        st.session_state.settings['padding'] = st.session_state.sb_pad
+        st.session_state.settings['d_cast'] = st.session_state.sb_cast
         save_settings(st.session_state.settings)
 
-    d_pre = d_pre_in = st.number_input("Durasi Pre-heat (Jam)", value=st.session_state.settings.get('d_pre', 12), on_change=update_settings_cb)
-    default_cast = cast_in = st.number_input("Default Durasi Casting (Jam)", value=st.session_state.settings.get('d_cast', 9), on_change=update_settings_cb)
-    d_post = d_post_in = st.number_input("Durasi Post-heat (Jam)", value=st.session_state.settings.get('d_post', 33), on_change=update_settings_cb)
-    padding_val = pad_in = st.number_input("Padding (Jam)", value=st.session_state.settings.get('padding', 1), on_change=update_settings_cb)
+    d_pre = st.number_input("Durasi Pre-heat (Jam)", value=st.session_state.settings.get('d_pre', 12), key="sb_pre", on_change=update_settings_cb)
+    default_cast = st.number_input("Default Durasi Casting (Jam)", value=st.session_state.settings.get('d_cast', 9), key="sb_cast", on_change=update_settings_cb)
+    d_post = st.number_input("Durasi Post-heat (Jam)", value=st.session_state.settings.get('d_post', 33), key="sb_post", on_change=update_settings_cb)
+    padding_val = st.number_input("Padding (Jam)", value=st.session_state.settings.get('padding', 1), key="sb_pad", on_change=update_settings_cb)
     padding_time = timedelta(hours=padding_val)
     
     st.divider()
