@@ -91,10 +91,10 @@ with st.sidebar:
         st.session_state.settings['d_cast'] = cast_in
         save_settings(st.session_state.settings)
 
-    d_pre = d_pre_in = st.number_input("Durasi Pre-heat (Jam)", value=st.session_state.settings.get('d_pre', 12), on_change=update_settings)
-    default_cast = cast_in = st.number_input("Default Durasi Casting (Jam)", value=st.session_state.settings.get('d_cast', 9), on_change=update_settings)
-    d_post = d_post_in = st.number_input("Durasi Post-heat (Jam)", value=st.session_state.settings.get('d_post', 33), on_change=update_settings)
-    padding_val = pad_in = st.number_input("Padding (Jam)", value=st.session_state.settings.get('padding', 1), on_change=update_settings)
+    d_pre = d_pre_in = st.number_input("Durasi Pre-heat (Jam)", value=st.session_state.settings.get('d_pre', 12), on_change=update_settings_cb)
+    default_cast = cast_in = st.number_input("Default Durasi Casting (Jam)", value=st.session_state.settings.get('d_cast', 9), on_change=update_settings_cb)
+    d_post = d_post_in = st.number_input("Durasi Post-heat (Jam)", value=st.session_state.settings.get('d_post', 33), on_change=update_settings_cb)
+    padding_val = pad_in = st.number_input("Padding (Jam)", value=st.session_state.settings.get('padding', 1), on_change=update_settings_cb)
     padding_time = timedelta(hours=padding_val)
     
     st.divider()
