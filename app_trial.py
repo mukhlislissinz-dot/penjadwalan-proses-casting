@@ -20,13 +20,19 @@ st.set_page_config(page_title="Factory Scheduler V15 - GSheets Cloud", layout="w
 SHEET_NAME = "Factory_Scheduler_DB"
 
 def get_gspread_client():
+    # Gunakan scope yang lebih kompatibel (Legacy + Modern)
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive",
+        "https://spreadsheets.google.com/feeds"
+    ]
+    
     path = os.path.join(os.path.dirname(__file__), "service_account.json")
     if os.path.exists(path):
-        scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
         return gspread.authorize(Credentials.from_service_account_file(path, scopes=scopes))
     try:
         if "gcp_service_account" in st.secrets:
-            return gspread.authorize(Credentials.from_service_account_info(st.secrets["gcp_service_account"]))
+            return gspread.authorize(Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes))
     except: pass
     st.error("❌ Credentials tidak ditemukan!")
     st.stop()
